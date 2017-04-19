@@ -24,10 +24,7 @@ Servo lateral;
 
 void setup()
 {
-  
-  
   lateral.attach(9);
-
 
   Wire.begin();
   // TWBR = 12;  // 400 kbit/sec I2C speed
@@ -39,14 +36,10 @@ void setup()
   pinMode(myLed, OUTPUT);
   digitalWrite(myLed, HIGH);
 
-
-
   // Read the WHO_AM_I register, this is a good test of communication
   byte c = myIMU.readByte(MPU9250_ADDRESS, WHO_AM_I_MPU9250);
   Serial.print("MPU9250 "); Serial.print("I AM "); Serial.print(c, HEX);
   Serial.print(" I should be "); Serial.println(0x71, HEX);
-
-
 
   if (c == 0x71) // WHO_AM_I should always be 0x68
   {
@@ -70,7 +63,6 @@ void setup()
     // Calibrate gyro and accelerometers, load biases in bias registers
     myIMU.calibrateMPU9250(myIMU.gyroBias, myIMU.accelBias);
 
-
     myIMU.initMPU9250();
     // Initialize device for active mode read of acclerometer, gyroscope, and
     // temperature
@@ -81,7 +73,6 @@ void setup()
     byte d = myIMU.readByte(AK8963_ADDRESS, WHO_AM_I_AK8963);
     Serial.print("AK8963 "); Serial.print("I AM "); Serial.print(d, HEX);
     Serial.print(" I should be "); Serial.println(0x48, HEX);
-
 
     // Get magnetometer calibration from AK8963 ROM
     myIMU.initAK8963(myIMU.magCalibration);
@@ -299,6 +290,7 @@ void loop()
       myIMU.yaw   *= RAD_TO_DEG;
       // Declination of SparkFun Electronics (40°05'26.6"N 105°11'05.9"W) is
       //   8° 30' E  ± 0° 21' (or 8.5°) on 2016-07-19
+      // Northwestern University (42° 3' 23" N 87° 41' 49" W)
       // - http://www.ngdc.noaa.gov/geomag-web/#declination
       myIMU.yaw   -= 8.5;
       myIMU.roll  *= RAD_TO_DEG;
@@ -314,7 +306,7 @@ void loop()
 //        delay(15);                       // waits 15ms for the servo to reach the position
 //      }
 
-      lateral.write(target-myIMU.roll);
+      lateral.write(target);
       delay(50);
       
       if (SerialDebug)
